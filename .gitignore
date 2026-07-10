@@ -1,0 +1,6 @@
+node_modules/
+data/*.db
+.env
+*.pem
+.vscode/
+npm-debug.log*
