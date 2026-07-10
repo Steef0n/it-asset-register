@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Asset Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>IT Asset Register</h1>
+
+        <form id="assetForm">
+            <input id="assetNumber" placeholder="Asset number" required>
+            <input id="user" placeholder="Assigned user" required>
+            <input id="department" placeholder="Department" required>
+            <input id="deviceType" placeholder="Device type" required>
+            <input id="serialNumber" placeholder="Serial number" required>
+            <input id="warrantyExpiry" type="date" required>
+            <input id="location" placeholder="Location" required>
+            <button type="submit">Add asset</button>
+        </form>
+
+        <input id="searchInput" placeholder="Search assets">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>User</th>
+                    <th>Department</th>
+                    <th>Device</th>
+                    <th>Serial</th>
+                    <th>Warranty</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="assetTableBody"></tbody>
+        </table>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
