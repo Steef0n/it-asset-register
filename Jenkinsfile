@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "it-asset-register"
+        CONTAINER_NAME = "it-asset-app"
+        HOST_DATA_PATH = "/home/ubuntu/it-asset-register/data"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -16,14 +22,39 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t it-asset-register:${BUILD_NUMBER} .'
+                sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+
+                    docker run -d \
+                      --name ${CONTAINER_NAME} \
+                      -p 3000:3000 \
+                      -v ${HOST_DATA_PATH}:/app/data \
+                      --restart unless-stopped \
+                      ${IMAGE_NAME}:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                    sleep 5
+                    curl --fail http://localhost:3000/api/assets
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully'
+            echo 'Pipeline completed and application deployed successfully'
         }
 
         failure {
