@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "it-asset-register"
         CONTAINER_NAME = "it-asset-app"
+        TEST_CONTAINER_NAME = "it-asset-test"
         HOST_DATA_PATH = "/home/ubuntu/it-asset-register/data"
     }
 
@@ -23,6 +24,24 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                sh '''
+                    docker rm -f ${TEST_CONTAINER_NAME} || true
+
+                    docker run -d \
+                      --name ${TEST_CONTAINER_NAME} \
+                      -p 3001:3000 \
+                      ${IMAGE_NAME}:${BUILD_NUMBER}
+
+                    sleep 5
+                    curl --fail http://localhost:3001/api/assets
+
+                    docker rm -f ${TEST_CONTAINER_NAME}
+                '''
             }
         }
 
@@ -54,11 +73,12 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed and application deployed successfully'
+            echo 'Pipeline tested and deployed the application successfully'
         }
 
         failure {
             echo 'Pipeline failed'
+            sh 'docker rm -f ${TEST_CONTAINER_NAME} || true'
         }
     }
 }
