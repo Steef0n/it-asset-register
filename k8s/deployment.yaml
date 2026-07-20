@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-asset-register
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: it-asset-register
+  template:
+    metadata:
+      labels:
+        app: it-asset-register
+    spec:
+      containers:
+        - name: it-asset-register
+          image: docker.io/library/it-asset-register:8
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: asset-data
+              mountPath: /app/data
+      volumes:
+        - name: asset-data
+          persistentVolumeClaim:
+            claimName: it-asset-register-pvc

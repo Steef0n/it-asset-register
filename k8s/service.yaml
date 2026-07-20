@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-asset-register-service
+spec:
+  selector:
+    app: it-asset-register
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: NodePort
