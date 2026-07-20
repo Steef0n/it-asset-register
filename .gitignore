@@ -4,3 +4,6 @@ data/*.db
 *.pem
 .vscode/
 npm-debug.log*
+
+k8s-data/
+*.tar
